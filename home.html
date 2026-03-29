@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZCLOTHING — Shop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">Z<span>CLOTHING</span></a>
+    <nav>
+      <a href="#" data-category="All" class="active">All</a>
+      <a href="#" data-category="Women">Women</a>
+      <a href="#" data-category="Men">Men</a>
+      <a href="#" data-category="Accessories">Accessories</a>
+      <a href="#" data-category="Sale">Sale</a>
+    </nav>
+    <div class="header-actions">
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search products...">
+      </div>
+      <div class="user-menu">
+        <button class="user-btn" id="userMenuBtn">
+          <span id="userNameDisplay">Account</span>
+        </button>
+        <div class="user-dropdown" id="userDropdown">
+          <a href="dashboard.html" class="dropdown-item">📊 My Dashboard</a>
+          <a href="#" class="dropdown-item" id="logoutBtn">🚪 Logout</a>
+        </div>
+      </div>
+      <button class="cart-btn" id="cartBtn">
+        🛒 CART <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="shop-layout">
+    <aside class="sidebar">
+      <div class="filter-section">
+        <h3>Category</h3>
+        <ul class="category-list" id="categoryList"></ul>
+      </div>
+
+      <div class="filter-section">
+        <h3>Price (₹)</h3>
+        <input type="range" id="priceRange" min="0" max="100000" step="1000" value="100000">
+        <div class="price-range-display">₹0 — ₹<span id="priceValue">100,000</span></div>
+      </div>
+
+      <div class="filter-section">
+        <h3>Colour</h3>
+        <div class="color-swatches" id="colorSwatches"></div>
+      </div>
+
+      <div class="filter-section">
+        <h3>Size</h3>
+        <div class="size-chips" id="sizeChips"></div>
+      </div>
+
+      <div class="filter-section">
+        <h3>Sort By</h3>
+        <div class="sort-options" id="sortOptions"></div>
+      </div>
+
+      <button class="clear-filters" id="clearFiltersBtn">✕ Clear All Filters</button>
+    </aside>
+
+    <main class="products-area">
+      <div class="products-header">
+        <h2>Curated <em>Collections</em></h2>
+        <p class="result-count" id="resultCount">Loading...</p>
+      </div>
+      <div class="active-filters" id="activeFilters"></div>
+      <div class="product-grid" id="productGrid"></div>
+    </main>
+  </div>
+
+  <!-- Cart Drawer -->
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h3>Shopping Bag</h3>
+      <button class="cart-close" id="closeCartBtn">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Total</span>
+        <span class="cart-total-amount" id="cartTotal">₹0</span>
+      </div>
+      <a href="checkout.html" class="checkout-btn">Proceed to Checkout</a>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="data/products-data.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

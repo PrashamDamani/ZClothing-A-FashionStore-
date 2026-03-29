@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZCLOTHING — Secure Checkout</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
+  <style>
+    .checkout-page {
+      background: var(--bg);
+    }
+    .checkout-header {
+      position: static;
+      border-bottom: 1px solid var(--border);
+      background: rgba(14, 13, 11, 0.98);
+    }
+    .checkout-steps {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+    }
+    .step {
+      color: var(--text-muted);
+    }
+    .step.active {
+      color: var(--gold);
+    }
+    .step-arrow {
+      color: var(--border);
+    }
+    .checkout-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      max-width: 1200px;
+      margin: 2rem auto;
+      gap: 2rem;
+      padding: 0 2rem;
+    }
+    .checkout-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.8rem;
+      margin-bottom: 1.5rem;
+    }
+    .checkout-section h3 {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .checkout-section h3::before {
+      content: '';
+      width: 4px;
+      height: 20px;
+      background: var(--gold);
+      display: inline-block;
+    }
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+    .form-group label {
+      display: block;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--warm-gray);
+      margin-bottom: 0.5rem;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.85rem 1rem;
+      color: var(--text);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s;
+      border-radius: 6px;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.1);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .payment-options {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .payment-option {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .payment-option:hover {
+      border-color: var(--gold);
+      background: rgba(201, 169, 110, 0.05);
+    }
+    .payment-option.selected {
+      border-color: var(--gold);
+      background: rgba(201, 169, 110, 0.1);
+    }
+    .payment-option input {
+      width: auto;
+      margin: 0;
+    }
+    .payment-option .payment-icon {
+      font-size: 1.5rem;
+      margin-left: auto;
+    }
+    .card-details {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: var(--surface);
+      border-radius: 8px;
+      display: none;
+    }
+    .card-details.show {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    .checkout-sidebar {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.8rem;
+      height: fit-content;
+      position: sticky;
+      top: 90px;
+    }
+    .checkout-items {
+      margin: 1rem 0;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .checkout-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .checkout-item-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.9rem;
+    }
+    .checkout-item-price {
+      font-family: 'DM Mono', monospace;
+      color: var(--gold);
+    }
+    .checkout-total {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 2px solid var(--border);
+    }
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.6rem 0;
+      font-size: 0.9rem;
+    }
+    .grand-total {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--gold);
+      border-top: 1px solid var(--border);
+      margin-top: 0.5rem;
+      padding-top: 0.8rem;
+    }
+    .place-order-btn {
+      width: 100%;
+      background: var(--gold);
+      color: var(--bg);
+      border: none;
+      padding: 1rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+    .place-order-btn:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+    }
+    .place-order-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .payment-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+    }
+    .payment-modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .payment-modal-content {
+      background: var(--card-bg);
+      border: 1px solid var(--gold);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+    .payment-spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid var(--border);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .payment-progress {
+      margin-top: 1rem;
+      background: var(--surface);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      width: 0%;
+      height: 4px;
+      background: var(--gold);
+      transition: width 0.3s;
+    }
+    .secure-badge {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.7rem;
+      color: var(--warm-gray);
+    }
+    .payment-icons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      font-size: 0.7rem;
+      color: var(--warm-gray);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 768px) {
+      .checkout-wrapper {
+        grid-template-columns: 1fr;
+      }
+      .checkout-sidebar {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body class="checkout-page">
+  <header class="checkout-header">
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+      <a href="home.html" class="logo">Z<span>CLOTHING</span></a>
+      <div class="checkout-steps">
+        <span class="step active">Shopping Bag</span>
+        <span class="step-arrow">→</span>
+        <span class="step active">Checkout</span>
+        <span class="step-arrow">→</span>
+        <span class="step">Confirmation</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="checkout-wrapper">
+    <div class="checkout-main">
+      <form id="checkoutForm">
+        <div class="checkout-section">
+          <h3>Contact Information</h3>
+          <div class="form-group">
+            <label>Email Address *</label>
+            <input type="email" id="checkoutEmail" placeholder="hello@zclothing.com" required>
+          </div>
+          <div class="form-group">
+            <label>Phone Number *</label>
+            <input type="tel" id="checkoutPhone" placeholder="+91 98765 43210" required>
+          </div>
+        </div>
+
+        <div class="checkout-section">
+          <h3>Shipping Address</h3>
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="checkoutFullName" placeholder="Aarav Mehta" required>
+          </div>
+          <div class="form-group">
+            <label>Street Address *</label>
+            <input type="text" id="checkoutAddress" placeholder="123, Fashion Avenue" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>City *</label>
+              <input type="text" id="checkoutCity" placeholder="Mumbai" required>
+            </div>
+            <div class="form-group">
+              <label>PIN Code *</label>
+              <input type="text" id="checkoutPincode" placeholder="400001" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="checkout-section">
+          <h3>Payment Method</h3>
+          <div class="payment-options" id="paymentOptions">
+            <label class="payment-option" data-method="cod">
+              <input type="radio" name="payment" value="cod" checked>
+              <span>Cash on Delivery</span>
+              <span class="payment-icon">💵</span>
+            </label>
+            <label class="payment-option" data-method="card">
+              <input type="radio" name="payment" value="card">
+              <span>Credit / Debit Card</span>
+              <span class="payment-icon">💳</span>
+            </label>
+            <label class="payment-option" data-method="upi">
+              <input type="radio" name="payment" value="upi">
+              <span>UPI / Digital Wallet</span>
+              <span class="payment-icon">📱</span>
+            </label>
+          </div>
+
+          <div class="card-details" id="cardDetails">
+            <div class="form-group">
+              <label>Card Number</label>
+              <input type="text" placeholder="1234 5678 9012 3456">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Expiry Date</label>
+                <input type="text" placeholder="MM/YY">
+              </div>
+              <div class="form-group">
+                <label>CVV</label>
+                <input type="password" placeholder="123">
+              </div>
+            </div>
+          </div>
+
+          <div class="card-details" id="upiDetails">
+            <div class="form-group">
+              <label>UPI ID</label>
+              <input type="text" placeholder="username@okhdfcbank">
+            </div>
+          </div>
+        </div>
+
+        <div class="checkout-section">
+          <h3>Order Notes (Optional)</h3>
+          <div class="form-group">
+            <textarea id="orderNotes" rows="3" placeholder="Special instructions for delivery..."></textarea>
+          </div>
+        </div>
+
+        <button type="button" class="place-order-btn" id="placeOrderBtn">Place Order</button>
+      </form>
+    </div>
+
+    <div class="checkout-sidebar">
+      <h3>Order Summary</h3>
+      <div id="checkoutItems" class="checkout-items"></div>
+      
+      <div class="checkout-total">
+        <div class="total-row">
+          <span>Subtotal</span>
+          <span id="checkoutSubtotal">₹0</span>
+        </div>
+        <div class="total-row">
+          <span>Shipping</span>
+          <span>FREE</span>
+        </div>
+        <div class="total-row">
+          <span>Tax (GST 5%)</span>
+          <span id="checkoutTax">₹0</span>
+        </div>
+        <div class="total-row grand-total">
+          <span>Total</span>
+          <span id="checkoutGrandTotal">₹0</span>
+        </div>
+      </div>
+
+      <div class="secure-badge">
+        🔒 Secure 128-bit SSL Encrypted
+      </div>
+      <div class="payment-icons">
+        <span>Visa</span> | <span>Mastercard</span> | <span>Rupay</span> | <span>UPI</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="payment-modal" id="paymentModal">
+    <div class="payment-modal-content">
+      <div class="payment-spinner"></div>
+      <h3>Processing Payment</h3>
+      <p id="paymentStatus">Please wait while we secure your transaction...</p>
+      <div class="payment-progress">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="data/products-data.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/checkout.js"></script>
+</body>
+</html>

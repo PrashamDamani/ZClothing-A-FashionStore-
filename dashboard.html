@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZCLOTHING — My Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
+  <style>
+    .dashboard-container {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: calc(100vh - 70px);
+    }
+    .dashboard-sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 2rem;
+    }
+    .user-profile {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .avatar {
+      width: 80px;
+      height: 80px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 1rem;
+      color: var(--bg);
+    }
+    .dashboard-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .dashboard-nav a {
+      padding: 0.8rem 1rem;
+      color: var(--warm-gray);
+      text-decoration: none;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      transition: 0.3s;
+      border-radius: 8px;
+    }
+    .dashboard-nav a:hover,
+    .dashboard-nav a.active {
+      color: var(--gold);
+      background: rgba(201, 169, 110, 0.1);
+    }
+    .dashboard-content {
+      padding: 2rem;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      text-align: center;
+      border-radius: 12px;
+    }
+    .stat-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--gold);
+    }
+    .orders-list {
+      margin-top: 1rem;
+    }
+    .order-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .order-id {
+      font-family: 'DM Mono', monospace;
+      color: var(--gold);
+    }
+    .order-status {
+      color: var(--success);
+    }
+    .wishlist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .wishlist-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .wishlist-item-image {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--warm-gray);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">Z<span>CLOTHING</span></a>
+    <nav>
+      <a href="home.html">Shop</a>
+      <a href="dashboard.html" class="active">Dashboard</a>
+    </nav>
+    <div class="header-actions">
+      <button class="cart-btn" id="cartBtn">🛒 CART <span class="cart-count" id="cartCount">0</span></button>
+    </div>
+  </header>
+
+  <div class="dashboard-container">
+    <div class="dashboard-sidebar">
+      <div class="user-profile">
+        <div class="avatar" id="userAvatar">👤</div>
+        <h3 id="userFullName">Loading...</h3>
+        <p id="userEmail"></p>
+      </div>
+      <nav class="dashboard-nav">
+        <a href="#" data-tab="overview" class="active">📊 Overview</a>
+        <a href="#" data-tab="orders">📦 Order History</a>
+        <a href="#" data-tab="wishlist">❤️ Wishlist</a>
+      </nav>
+    </div>
+
+    <div class="dashboard-content">
+      <div id="overview-tab" class="tab-content active">
+        <h2>Welcome back, <span id="welcomeName"></span>!</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="totalOrders">0</div>
+            <div>Total Orders</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="wishlistCount">0</div>
+            <div>Wishlist Items</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="totalSpent">₹0</div>
+            <div>Lifetime Spent</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="orders-tab" class="tab-content">
+        <h2>Order History</h2>
+        <div id="ordersList" class="orders-list"></div>
+      </div>
+
+      <div id="wishlist-tab" class="tab-content">
+        <h2>My Wishlist</h2>
+        <div id="wishlistGrid" class="wishlist-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Drawer -->
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h3>Shopping Bag</h3>
+      <button class="cart-close" id="closeCartBtn">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Total</span>
+        <span class="cart-total-amount" id="cartTotal">₹0</span>
+      </div>
+      <a href="checkout.html" class="checkout-btn">Proceed to Checkout</a>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="data/products-data.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

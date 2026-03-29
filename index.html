@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZCLOTHING — Luxury Fashion Atelier</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
+  <style>
+    .hero-splash {
+      min-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 4rem;
+      background: radial-gradient(ellipse at 50% 50%, rgba(201, 169, 110, 0.08) 0%, transparent 70%);
+    }
+    .hero-splash-content {
+      max-width: 800px;
+    }
+    .hero-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      margin-bottom: 2rem;
+    }
+    .hero-splash h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 400;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+    .hero-splash h1 em {
+      color: var(--gold);
+      font-style: italic;
+    }
+    .hero-splash p {
+      font-size: 1.2rem;
+      color: var(--warm-gray);
+      max-width: 500px;
+      margin: 0 auto 2rem;
+    }
+    .btn-primary {
+      background: var(--gold);
+      color: var(--bg);
+      padding: 1rem 2.5rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: 0.3s;
+      display: inline-block;
+    }
+    .btn-primary:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+    }
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+      margin-top: 4rem;
+    }
+    .stat {
+      text-align: center;
+    }
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--gold);
+      display: block;
+    }
+    .stat span:last-child {
+      font-size: 0.8rem;
+      color: var(--warm-gray);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">Z<span>CLOTHING</span></a>
+    <nav>
+      <a href="home.html">Shop</a>
+      <a href="home.html#collections">Collections</a>
+      <a href="home.html#new">New Arrivals</a>
+    </nav>
+    <div class="header-actions">
+      <a href="login.html" class="user-btn">Sign In</a>
+      <a href="register.html" class="user-btn">Register</a>
+    </div>
+  </header>
+
+  <section class="hero-splash">
+    <div class="hero-splash-content">
+      <div class="hero-tag">✦ The Art of Dressing ✦</div>
+      <h1>Where <em>Luxury</em><br>Meets <em>Identity</em></h1>
+      <p>Discover a curated universe of timeless elegance, where each piece tells a story of craftsmanship and distinction.</p>
+      <a href="home.html" class="btn-primary">Enter the Atelier →</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-number">50+</span><span>Designers</span></div>
+      <div class="stat"><span class="stat-number">2000+</span><span>Collections</span></div>
+      <div class="stat"><span class="stat-number">15k+</span><span>Clients</span></div>
+    </div>
+  </section>
+
+  <script src="data/products-data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
